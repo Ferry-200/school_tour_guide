@@ -7,7 +7,9 @@ import 'dart:math' as math;
 
 double toRadians(double num) => num * (math.pi / 180);
 
-/// return path if succeed.
+/// Return path if succeed.
+/// onlyCarriageway: true, planning path with carriageway only.
+/// onlyCarriageway: false, planning path with both sidewalk and carriageway.
 List<Line>? aStarPathFinding(Point start, Point end,
     {required bool onlyCarriageway}) {
   var cameFrom = HashMap<Point, Point>();
@@ -20,7 +22,6 @@ List<Line>? aStarPathFinding(Point start, Point end,
 
   while (frontier.isNotEmpty) {
     var current = frontier.remove(frontier.firstKey())!;
-    // print(current.pid);
 
     // Found end.
     if (current == end) {
@@ -28,6 +29,8 @@ List<Line>? aStarPathFinding(Point start, Point end,
         return null;
       }
 
+      /// Convert points to lines.
+      /// Painting path with lines is more clear than painting with points.
       var last = end;
       var secondLast = cameFrom[last]!;
       var path = <Line>[];
@@ -51,6 +54,7 @@ List<Line>? aStarPathFinding(Point start, Point end,
           next = line.points[1];
         }
 
+        /// cost = g(x) + h(x)
         double newCost = costSoFar[current]! + line.distance;
         if (!costSoFar.containsKey(next) || (newCost < costSoFar[next]!)) {
           costSoFar[next] = newCost;
@@ -70,14 +74,23 @@ List<Line>? aStarPathFinding(Point start, Point end,
 }
 
 class MapData {
+  /// points that has name
   List<Point> visiblePoints;
+
+  /// all points, such as cross street's point,
+  /// area's entries and point with name.
   List<Point> allPoints;
 
+  /// roads
   List<Line> lines;
+
+  /// buildings that has entries.
   List<Area> areas;
 
+  /// scenery spots.
   List<Point> spots;
 
+  /// Singleton Pattern. We need load map data only once.
   static MapData? _instance;
 
   static MapData get instance {
@@ -92,6 +105,7 @@ class MapData {
     this.spots,
   );
 
+  /// parse map data from GeoJSON
   factory MapData.fromJson(String path) {
     var visiblePoints = <Point>[];
     var allPoints = <Point>[];
@@ -189,17 +203,15 @@ class MapData {
 }
 
 class Coordinate {
-  /// 经度
   double longitude;
-
-  /// 纬度
   double latitude;
 
   Coordinate(this.longitude, this.latitude);
 
-  /// 使用半正矢公式（Haversine formula）计算
+  /// use Haversine formula.
   static double getDistance(Coordinate coor1, Coordinate coor2) {
-    double r = 6378137.0; // earth radius in meter
+    // earth radius in meter
+    double r = 6378137.0;
 
     var lat2R = toRadians(coor2.latitude);
     var lat1R = toRadians(coor1.latitude);
@@ -225,11 +237,13 @@ class Point {
   bool visibility;
   String description;
 
-  /// List<String>
+  /// another names of place, List<String>
   List aka;
 
   /// List<int>
   final List _lines;
+
+  /// roads that link to this point.
   late List<Line> lines;
   Coordinate coordinate;
 
@@ -237,9 +251,7 @@ class Point {
       this._lines, this.coordinate);
 
   @override
-  String toString() {
-    return "Point{id: $pid}";
-  }
+  String toString() => "Point{id: $pid}";
 }
 
 enum LineType {
@@ -247,20 +259,25 @@ enum LineType {
   carriageway,
 }
 
+/// line described as polyline here.
 class Line {
   int lid;
   bool isCarriageway;
 
   /// List<int>
   final List _points;
+
+  /// start and end of this road.
   late List<Point> points;
+
+  /// these are points' coordinate of line.
   List<Coordinate> coordinates;
 
   Line(this.lid, this.isCarriageway, this._points, this.coordinates);
 
-  /// 线可以由多个点组成，所以这里的距离是这条线里的所有两点之间距离的总和
   double? _distance;
 
+  /// distance means summary of every two points' distance.
   double get distance {
     if (_distance == null) {
       double s = 0;
@@ -280,20 +297,25 @@ class Line {
   }
 }
 
+/// area described as polygon here.
 class Area {
   int areaId;
   String name;
   String description;
 
-  /// List<String>
+  /// another names of this place, List<String>
   List aka;
 
-  /// List<String>
+  /// another places in this place, List<String>
   List contains;
 
   /// List<int>
   final List _entries;
+
+  /// entries or exits of this place.
   late List<Point> entries;
+
+  /// vertices' coordinate of this polygon.
   List<Coordinate> coordinates;
 
   late double minLat;

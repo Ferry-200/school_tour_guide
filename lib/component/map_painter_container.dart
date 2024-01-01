@@ -166,7 +166,6 @@ class _MapPainterContainerState extends State<MapPainterContainer> {
             bottomRight: Radius.circular(12),
           ),
           onTap: () {
-            // Scaffold.of(context).openDrawer();
             if (controller.selectedArea.value != -1 ||
                 controller.selectedPoint.value != -1) {
               openRestoreDrawer();

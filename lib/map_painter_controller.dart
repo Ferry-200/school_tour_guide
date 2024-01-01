@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'geometry.dart';
 
 class MapPainterController with ChangeNotifier {
-  /// 右移：图向左移
-  /// 上移：图向下移
+  /// zeroLon：Ox; plus a num > 0, the map moves right.
+  /// zeroLat：Oy; plus a num > 0, the map moves down.
   double zeroLon = 119.544735;
   double zeroLat = 39.926761;
 
-  /// °/px
-  /// 除一个大于一的数 => 放大
-  /// 除一个小于一的数 => 缩小
+  /// divide a num > 1, the map zooms in.
+  /// divide a num < 1, the map zooms out.
   double measuringScale = 0.0000120828;
 
   ValueNotifier<int> selectedPoint = ValueNotifier<int>(-1);
@@ -28,6 +27,7 @@ class MapPainterController with ChangeNotifier {
 
   static MapPainterController? _instance;
 
+  /// Singleton Pattern.
   static MapPainterController get instance {
     if (_instance == null) {
       _instance = MapPainterController._internal();
@@ -36,6 +36,7 @@ class MapPainterController with ChangeNotifier {
     return _instance!;
   }
 
+  /// when drag with mouse_1 down.
   void onMapDrag(double dx, double dy) {
     zeroLon -= measuringScale * dx;
     // print(zeroLon);
@@ -43,16 +44,19 @@ class MapPainterController with ChangeNotifier {
     notifyListeners();
   }
 
+  /// when press zoomIn button
   void zoomIn() {
     measuringScale = measuringScale / 1.5;
     notifyListeners();
   }
 
+  /// when press zoomOut button
   void zoomOut() {
     measuringScale = measuringScale * 1.5;
     notifyListeners();
   }
 
+  /// use default origin and measuring scale
   void restore() {
     zeroLat = defaultZeroLat;
     zeroLon = defaultZeroLon;
@@ -65,7 +69,7 @@ class MapPainterController with ChangeNotifier {
     notifyListeners();
   }
 
-  /// 使用滚轮放大/缩小
+  /// zoom in/out map
   void onMouseWheeling(double dy) {
     measuringScale = measuringScale * (1 + dy / 1000);
     notifyListeners();
@@ -96,13 +100,13 @@ class MapPainterController with ChangeNotifier {
     notifyListeners();
   }
 
-  void selectPoint(int pid){
+  void selectPoint(int pid) {
     selectedPoint.value = pid;
     selectedArea.value = -1;
     notifyListeners();
   }
 
-  void selectArea(int areaId){
+  void selectArea(int areaId) {
     selectedArea.value = areaId;
     selectedPoint.value = -1;
     notifyListeners();

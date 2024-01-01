@@ -28,11 +28,7 @@ class _TourDialogState extends State<TourDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Padding(
-                padding: EdgeInsets.only(
-                  left: 12,
-                  top: 12,
-                  bottom: 8,
-                ),
+                padding: EdgeInsets.only(left: 12, top: 12, bottom: 8),
                 child: Text(
                   "环游",
                   style: TextStyle(

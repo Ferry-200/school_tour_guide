@@ -4,6 +4,7 @@ import 'geometry.dart';
 import 'component/map_painter_container.dart';
 
 void main() {
+  /// load map data from GeoJSON.
   MapData.fromJson("raw_map_data/all_features.json");
   runApp(const Entry());
 }
@@ -25,6 +26,7 @@ class Entry extends StatelessWidget {
       ],
       theme: ThemeData(useMaterial3: true),
       home: const Scaffold(
+        /// map controls
         body: MapPainterContainer(),
       ),
     );

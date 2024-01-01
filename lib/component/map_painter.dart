@@ -45,10 +45,11 @@ class MapPainter extends CustomPainter {
     ..style = PaintingStyle.stroke
     ..strokeWidth = 4;
 
-  /// 119.544735, 39.926761
+  /// convert latitude to local position in px, use as y
   double latToLocalY(double lat) =>
       (controller.zeroLat - lat) / controller.measuringScale;
 
+  /// convert longitude to local position in px, use as x
   double lonToLocalX(double lon) =>
       (lon - controller.zeroLon) / controller.measuringScale;
 
@@ -110,6 +111,8 @@ class MapPainter extends CustomPainter {
       var para = builder.build();
       para.layout(ui.ParagraphConstraints(width: area.name.length * 12));
 
+      /// only display name when selected or
+      /// name String's length < area polygon's width.
       if (area.areaId == select ||
           (lonToLocalX(area.maxLon) - lonToLocalX(area.minLon) > para.width &&
               latToLocalY(area.minLat) - latToLocalY(area.maxLat) >
@@ -125,6 +128,7 @@ class MapPainter extends CustomPainter {
     }
   }
 
+  /// paint visible points only.
   void drawPoints(Canvas canvas, int select) {
     for (var point in mapData.allPoints) {
       if (point.visibility ||
@@ -138,6 +142,7 @@ class MapPainter extends CustomPainter {
           point.pid == select ? selectedPointPainter : pointPainter,
         );
 
+        /// only display name when map zoomed in.
         if (controller.measuringScale <=
             controller.defaultMeasuringScale / 2.25) {
           var builder = ui.ParagraphBuilder(ui.ParagraphStyle());

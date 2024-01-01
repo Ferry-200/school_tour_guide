@@ -47,7 +47,7 @@ class SidePanel extends StatelessWidget {
                             mapData.areas[mapController.selectedArea.value];
                         return AreaDetailPage(select);
                       }
-        
+
                       return const Center(child: Text("Error Occurs"));
                     },
                   );
