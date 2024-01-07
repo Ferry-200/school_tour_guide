@@ -113,7 +113,7 @@ List<DirectionDescription> pathDescription(List<Line> path, Point start) {
           }
           description.add(DirectionDescription(
             direction,
-            "在 ${path[i + 1].lid} 号路的尽头掉头。",
+            "在 ${path[i].lid} 号路的尽头掉头。",
           ));
           break;
         }
