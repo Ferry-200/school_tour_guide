@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'search_field.dart';
 import '../geometry.dart';
 import '../map_painter_controller.dart';
 import '../page/area_detail_page.dart';
