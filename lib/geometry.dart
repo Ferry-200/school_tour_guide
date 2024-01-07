@@ -30,7 +30,7 @@ List<Line>? aStarPathFinding(Point start, Point end,
       }
 
       /// Convert points to lines.
-      /// Painting path with lines is more clear than painting with points.
+      /// Painting path with lines is more clearly than painting with points.
       var last = end;
       var secondLast = cameFrom[last]!;
       var path = <Line>[];
@@ -44,15 +44,12 @@ List<Line>? aStarPathFinding(Point start, Point end,
         last = secondLast;
         secondLast = cameFrom[last]!;
       }
-      return path;
+      return path.reversed.toList(growable: false);
     }
 
     for (var line in current.lines) {
       if (line.isCarriageway || !onlyCarriageway) {
-        var next = line.points.first;
-        if (next == current) {
-          next = line.points[1];
-        }
+        var next = line.forward(current);
 
         /// cost = g(x) + h(x)
         double newCost = costSoFar[current]! + line.distance;
@@ -203,7 +200,10 @@ class MapData {
 }
 
 class Coordinate {
+  /// x
   double longitude;
+
+  /// y
   double latitude;
 
   Coordinate(this.longitude, this.latitude);
@@ -254,6 +254,24 @@ class Point {
   String toString() => "Point{id: $pid}";
 }
 
+class Vector {
+  double x;
+  double y;
+
+  Vector(this.x, this.y);
+
+  /// x1 * y2 - x2 * y1
+  static double crossProduct(Vector v1, Vector v2) => v1.x * v2.y - v2.x * v1.y;
+
+  /// 返回从点射出的两条向量的夹角，以度数表示。
+  static double andle(Vector v1, Vector v2) =>
+      math.acos((v1.x * v2.x + v1.y * v2.y) /
+          (math.sqrt(math.pow(v1.x, 2) + math.pow(v1.y, 2)) *
+              math.sqrt(math.pow(v2.x, 2) + math.pow(v2.y, 2)))) *
+      180 /
+      math.pi;
+}
+
 enum LineType {
   footway,
   carriageway,
@@ -291,9 +309,36 @@ class Line {
     return _distance!;
   }
 
+  Point forward(Point start) => points[0] == start ? points[1] : points[0];
+
+  static const bool vectorIn = true;
+  static const bool vectorOut = false;
+
+  /// 返回离 [point] 最近的折线的向量，
+  /// direction: Line.vectorIn [true], 向量方向入点
+  /// direction: Line.vectorOut [false], 向量方向离点
+  Vector nearestVec(Point point, bool direction) {
+    double s1 = Coordinate.getDistance(point.coordinate, coordinates.first);
+    double s2 = Coordinate.getDistance(point.coordinate, coordinates.last);
+
+    Coordinate nearest = s1 < s2 ? coordinates.first : coordinates.last;
+    Coordinate secondNearest =
+        s1 < s2 ? coordinates[1] : coordinates[coordinates.length - 2];
+
+    return direction
+        ? Vector(
+            nearest.longitude - secondNearest.longitude,
+            nearest.latitude - secondNearest.latitude,
+          )
+        : Vector(
+            secondNearest.longitude - nearest.longitude,
+            secondNearest.latitude - nearest.latitude,
+          );
+  }
+
   @override
   String toString() {
-    return "Line{id: $lid}";
+    return "$lid";
   }
 }
 

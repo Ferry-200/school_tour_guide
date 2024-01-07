@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../component/side_panel.dart';
 
 import '../geometry.dart';
 import '../map_painter_controller.dart';
+import 'direct_page.dart';
 
 class AreaDetailPage extends StatefulWidget {
   const AreaDetailPage(this.area, {super.key});

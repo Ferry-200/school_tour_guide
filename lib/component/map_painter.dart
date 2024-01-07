@@ -182,6 +182,42 @@ class MapPainter extends CustomPainter {
         );
       }
       canvas.drawPath(path, bestPathPainter);
+
+      var c1x = lonToLocalX(
+        (line.coordinates[0].longitude + line.coordinates[1].longitude) / 2,
+      );
+      var c1y = latToLocalY(
+        (line.coordinates[0].latitude + line.coordinates[1].latitude) / 2,
+      );
+
+      var builder = ui.ParagraphBuilder(ui.ParagraphStyle());
+      builder.pushStyle(ui.TextStyle(
+        color: Colors.black,
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      ));
+      var text = "${line.lid}";
+      builder.addText(text);
+      var para = builder.build();
+      para.layout(ui.ParagraphConstraints(width: text.length * 12));
+      canvas.drawParagraph(
+        para,
+        Offset(c1x - (para.width / 4), c1y - (para.height / 2)),
+      );
+
+      if (line.coordinates.length > 2) {
+        var secondLast = line.coordinates[line.coordinates.length - 2];
+        var c2x = lonToLocalX(
+          (line.coordinates.last.longitude + secondLast.longitude) / 2,
+        );
+        var c2y = latToLocalY(
+          (line.coordinates.last.latitude + secondLast.latitude) / 2,
+        );
+        canvas.drawParagraph(
+          para,
+          Offset(c2x - (para.width / 4), c2y - (para.height / 2)),
+        );
+      }
     }
   }
 

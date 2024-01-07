@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../geometry.dart';
 
-import '../component/side_panel.dart';
+import 'direct_page.dart';
 
 class PointDetailPage extends StatelessWidget {
   const PointDetailPage(this.point, {super.key});
