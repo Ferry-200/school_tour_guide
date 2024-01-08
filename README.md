@@ -2,10 +2,10 @@
 
 ### 软件介绍
 
-![软件截图](image_1.png)
+![软件截图](images/image_1.png)
 - 地图数据包含171个点位、221条折线、44个多边形。
 - 鼠标滚轮/按钮控制地图缩放、右键地图选点、地点检索、路径规划（单点/多点）、*路径描述（验收后新添的功能）*
-![路径描述（验收后更新）](image_2.png)
+![路径描述（验收后更新）](images/image_2.png)
 
 ### 课设题目要求
 
@@ -19,15 +19,15 @@
 
 ### 地图数据准备
 
-![地图数据](image_3.png)
+![地图数据](images/image_3.png)
 
 原数据见 [all_features.json](raw_map_data/all_features.json)
 
 1. 在道路交叉处、建筑物出入口、地点标点，以标点先后为ID序
 2. 沿着道路在两点之间划折线，以划线先后为ID序
 3. 标注每个点连接的道路和每条道路连接的点，用ID表示   
-   <img src = "image_4.png" width = 164 title = "点的数据"/>
-   <img src = "image_5.png" width = 164 title = "线的数据"/>
+   <img src = "images/image_4.png" width = 164 title = "点的数据"/>
+   <img src = "images/image_5.png" width = 164 title = "线的数据"/>
 4. 沿着建筑物画多边形，以先后为ID序。用ID标注包含的出入口
 5. 根据实际情况添加 `name`, `aka`, `contains` 等字段
 
