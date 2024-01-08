@@ -1,12 +1,6 @@
-import '../geometry.dart';
+import 'package:flutter/material.dart';
 
-/// 描述路线每一步，直行、转弯
-/// 方向枚举：左转、右转、直行、掉头
-///
-/// 沿...路步行/行驶...米
-/// 左/右转进入...路
-///
-/// 向量叉乘 x1*y2-x2*y1; >0: v2在v1的左边; <0: v2在v1的右边
+import '../geometry.dart';
 
 enum Direction {
   /// crossProduct<v1, v2> > 0, 22.5° <= angel<v1, v2> < 157.5°
@@ -132,4 +126,84 @@ List<DirectionDescription> pathDescription(List<Line> path, Point start) {
   ));
 
   return description;
+}
+
+class PathDetailPage extends StatelessWidget {
+  const PathDetailPage(
+      {super.key,
+      required this.start,
+      required this.end,
+      required this.pathDescription,
+      required this.distance});
+
+  final String start;
+  final String end;
+  final int distance;
+  final List<DirectionDescription> pathDescription;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  icon: const Icon(Icons.arrow_back),
+                ),
+                const SizedBox(width: 8),
+                const Text("路线详情", style: TextStyle(fontSize: 16)),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("起点：$start"),
+                Text("终点：$end"),
+                Text("全程 $distance 米"),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: pathDescription.length,
+              itemBuilder: (context, index) {
+                IconData direction;
+                if (pathDescription[index].direction == Direction.front) {
+                  direction = Icons.straight;
+                } else if (pathDescription[index].direction == Direction.left) {
+                  direction = Icons.turn_left;
+                } else if (pathDescription[index].direction ==
+                    Direction.right) {
+                  direction = Icons.turn_right;
+                } else {
+                  direction = Icons.u_turn_left;
+                }
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Icon(direction),
+                      const SizedBox(width: 8.0),
+                      Text(pathDescription[index].description),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

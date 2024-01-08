@@ -39,7 +39,7 @@ class _DirectPageState extends State<DirectPage> {
                   icon: const Icon(Icons.arrow_back),
                 ),
                 const SizedBox(width: 8),
-                const Text("路线", style: TextStyle(fontSize: 16)),
+                const Text("导航", style: TextStyle(fontSize: 16)),
               ],
             ),
           ),
@@ -177,12 +177,20 @@ class _DirectPageState extends State<DirectPage> {
               distance += line.distance;
             }
             MapPainterController.instance.updateBestPath(path);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("路径规划成功，全程 ${distance.round()} 米"),
-              ),
-            );
-            print(pathDescription(path, selectedStart!));
+
+            var description = pathDescription(path, selectedStart!);
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) {
+                return PathDetailPage(
+                  start: selectedArea == null
+                      ? selectedStart!.name
+                      : selectedArea!.name,
+                  end: widget.endName,
+                  pathDescription: description,
+                  distance: distance.toInt(),
+                );
+              },
+            ));
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("可行路径不存在")),
@@ -201,12 +209,21 @@ class _DirectPageState extends State<DirectPage> {
               distance += line.distance;
             }
             MapPainterController.instance.updateBestPath(path);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("路径规划成功，全程 ${distance.round()} 米"),
-              ),
+
+            var description = pathDescription(
+              path,
+              selectedArea!.entries.first,
             );
-            print(pathDescription(path, selectedStart!));
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) {
+                return PathDetailPage(
+                  start: selectedArea!.name,
+                  end: widget.endName,
+                  pathDescription: description,
+                  distance: distance.toInt(),
+                );
+              },
+            ));
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("可行路径不存在")),
@@ -234,12 +251,20 @@ class _DirectPageState extends State<DirectPage> {
               distance += line.distance;
             }
             MapPainterController.instance.updateBestPath(path);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("路径规划成功，全程 ${distance.round()} 米"),
-              ),
-            );
-            print(pathDescription(path, selectedStart!));
+
+            var description = pathDescription(path, selectedStart!);
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) {
+                return PathDetailPage(
+                  start: selectedArea == null
+                      ? selectedStart!.name
+                      : selectedArea!.name,
+                  end: widget.endName,
+                  pathDescription: description,
+                  distance: distance.toInt(),
+                );
+              },
+            ));
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("可行路径不存在")),
@@ -258,12 +283,21 @@ class _DirectPageState extends State<DirectPage> {
               distance += line.distance;
             }
             MapPainterController.instance.updateBestPath(path);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("路径规划成功，全程 ${distance.round()} 米"),
-              ),
+
+            var description = pathDescription(
+              path,
+              selectedArea!.entries.first,
             );
-            print(pathDescription(path, selectedStart!));
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) {
+                return PathDetailPage(
+                  start: selectedArea!.name,
+                  end: widget.endName,
+                  pathDescription: description,
+                  distance: distance.toInt(),
+                );
+              },
+            ));
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("可行路径不存在")),
