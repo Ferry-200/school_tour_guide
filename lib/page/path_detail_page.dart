@@ -59,64 +59,71 @@ List<DirectionDescription> pathDescription(List<Line> path, Point start) {
 
   for (var i = 0; i < path.length - 1; i++) {
     next = path[i].forward(next);
-    var v1 = path[i].nearestVec(next, Line.vectorIn);
-    var v2 = path[i + 1].nearestVec(next, Line.vectorOut);
 
-    var direction = directionFromVecs(v1, v2);
+    if (next.lines.length <= 2) {
+      forwardDistance += path[i + 1].distance.toInt();
+      forwardLines.add(path[i + 1].lid);
+    } else {
+      var v1 = path[i].nearestVec(next, Line.vectorIn);
+      var v2 = path[i + 1].nearestVec(next, Line.vectorOut);
 
-    switch (direction) {
-      case Direction.front:
-        forwardDistance += path[i + 1].distance.toInt();
-        forwardLines.add(path[i + 1].lid);
-        break;
-      case Direction.left:
-        {
-          if (forwardDistance != 0) {
+      var direction = directionFromVecs(v1, v2);
+
+      switch (direction) {
+        case Direction.front:
+          {
             description.add(DirectionDescription(
               Direction.front,
               "沿 ${forwardLines.join(", ")} 号道路直行 $forwardDistance 米。",
             ));
             forwardDistance = path[i + 1].distance.toInt();
             forwardLines = [path[i + 1].lid];
+            description.add(DirectionDescription(direction, "直行通过路口。"));
+            break;
           }
-          description.add(DirectionDescription(
-            direction,
-            "在 ${path[i].lid} 号路尽头左转进入 ${path[i + 1].lid} 号路。",
-          ));
-          break;
-        }
-      case Direction.right:
-        {
-          if (forwardDistance != 0) {
+        case Direction.left:
+          {
             description.add(DirectionDescription(
               Direction.front,
               "沿 ${forwardLines.join(", ")} 号道路直行 $forwardDistance 米。",
             ));
             forwardDistance = path[i + 1].distance.toInt();
             forwardLines = [path[i + 1].lid];
+            description.add(DirectionDescription(
+              direction,
+              "在 ${path[i].lid} 号路尽头左转进入 ${path[i + 1].lid} 号路。",
+            ));
+            break;
           }
-          description.add(DirectionDescription(
-            direction,
-            "在 ${path[i].lid} 号路尽头右转进入 ${path[i + 1].lid} 号路。",
-          ));
-          break;
-        }
-      case Direction.back:
-        {
-          if (forwardDistance != 0) {
+        case Direction.right:
+          {
             description.add(DirectionDescription(
               Direction.front,
               "沿 ${forwardLines.join(", ")} 号道路直行 $forwardDistance 米。",
             ));
             forwardDistance = path[i + 1].distance.toInt();
             forwardLines = [path[i + 1].lid];
+            description.add(DirectionDescription(
+              direction,
+              "在 ${path[i].lid} 号路尽头右转进入 ${path[i + 1].lid} 号路。",
+            ));
+            break;
           }
-          description.add(DirectionDescription(
-            direction,
-            "在 ${path[i].lid} 号路的尽头掉头。",
-          ));
-          break;
-        }
+        case Direction.back:
+          {
+            description.add(DirectionDescription(
+              Direction.front,
+              "沿 ${forwardLines.join(", ")} 号道路直行 $forwardDistance 米。",
+            ));
+            forwardDistance = path[i + 1].distance.toInt();
+            forwardLines = [path[i + 1].lid];
+            description.add(DirectionDescription(
+              direction,
+              "在 ${path[i].lid} 号路的尽头掉头。",
+            ));
+            break;
+          }
+      }
     }
   }
   description.add(DirectionDescription(
